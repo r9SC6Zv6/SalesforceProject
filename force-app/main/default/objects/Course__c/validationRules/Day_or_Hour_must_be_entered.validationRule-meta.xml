@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Day_or_Hour_must_be_entered</fullName>
+    <active>true</active>
+    <errorConditionFormula>ISNULL( Days__c ) &amp;&amp;  ISNULL( Hours__c )</errorConditionFormula>
+    <errorDisplayField>Hours__c</errorDisplayField>
+    <errorMessage>Course length in Days or Hours must be entered</errorMessage>
+</ValidationRule>

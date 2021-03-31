@@ -1,0 +1,225 @@
+<apex:page standardController="Instructor_Invoice__c"  renderAs="pdf">
+
+    <!--
+        The same visualforce page is used to generate both the service and expense invoices.
+        The dynamic behavior is achived by conditionaly applying a "hiding" class to elements
+        according to invoice type.
+    -->    
+
+    <apex:stylesheet value="{!URLFOR($Resource.Styles,'Styles/InstructorInvoicePDF.css')}" />
+    <apex:variable value="{!IF(BEGINS(Instructor_Invoice__c.Name, 'EXPINV') ,'','hiddenForService')}" var="isHidden"/>
+
+    <header>
+        <div id="headerInvoiceNumber">
+            <h5>
+                <apex:outputText value="{!Instructor_Invoice__c.Name}" />
+            </h5>
+        </div>
+        <div id="title">
+            <h4>{!IF(BEGINS(Instructor_Invoice__c.Name, 'EXPINV') ,'EXPENSE','SERVICE')}</h4>
+            <h1>INVOICE</h1>
+        </div>
+        <div id="companyInfo">
+            <apex:image value="https://icloudcomproject-dev-ed.my.salesforce.com/sfc/dist/version/renditionDownload?rendition=ORIGINAL_Png&versionId=0684L000002ar0j&operationContext=DELIVERY&contentId=05T4L00000831aC&page=0&d=/a/4L000000CfeH/NKW3gocni8NAKLu_QH7QdWjdLchH1tPU0amiPmpJr4I&oid=00D4L000000DuOu&dpt=null&viewId="
+                width="75mm" height="15mm" alt="Force Training Logo" />
+            <p>32 Guild Street, &nbsp; London, &nbsp; EC2N 3RN</p>
+            <p>United Kingdom</p>
+            <p id="companyUrl">forcetraining.com</p>
+        </div>
+    </header>
+
+    <div id="invoiceDetails">
+        
+        <div class="invoiceAddress">
+            <table id="invoiceToTable">
+                <tr>
+                    <th>Bill To</th>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_Account__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_Street__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_City__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_State__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_Country__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_Postal_Code__c}" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="invoiceAddress">
+            <table id="mailToTable">
+                <tr>
+                    <th>Mail To</th>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_Account__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_Street__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_City__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_State__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_Country__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText value="{!Instructor_Invoice__c.Billed_To_Postal_Code__c}" />
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="invoiceInfo">
+            <table id="invoiceInfoTable">
+                <tr>
+                    <th>Invoice Number</th>
+                    <td><apex:outputText value="{!Instructor_Invoice__c.Name}" /></td>
+                </tr>
+                <tr>
+                    <th>Invoice Date</th>
+                    <td><apex:outputText value="{0, date,dd'/'MM'/'yyyy}">
+                        <apex:param value="{!Instructor_Invoice__c.Submitted_Date__c}" />
+                    </apex:outputText></td>
+                </tr>
+                <tr>
+                    <th>Due Date</th>
+                    <td><apex:outputText value="{0, date,dd'/'MM'/'yyyy}">
+                        <apex:param value="{!Instructor_Invoice__c.Submitted_Date__c + 30}" />
+                    </apex:outputText></td>
+                </tr>
+                <tr>
+                    <th>Course Location</th>
+                    <td><apex:outputText value="{!Instructor_Invoice__c.Course__r.Location__c}" /></td>
+                </tr>
+                <tr>
+                    <th>Course Start Date</th>
+                    <td><apex:outputText value="{0, date,dd'/'MM'/'yyyy}">
+                        <apex:param value="{!Instructor_Invoice__c.Course__r.CloseDate}" />
+                    </apex:outputText></td>
+                </tr>
+                <tr>
+                    <th>Course End Date</th>
+                    <td><apex:outputText value="{0, date,dd'/'MM'/'yyyy}">
+                        <apex:param value="{!Instructor_Invoice__c.Course__r.End_Date__c}" />
+                    </apex:outputText></td>
+                </tr>
+                <tr>
+                    <th>Instructor</th>
+                    <td><apex:outputText value="{!Instructor_Invoice__c.Course__r.Instructor__r.Name}" /></td>
+                </tr>
+            </table>
+        </div>
+
+    </div>
+    
+    <div class="invoiceLineItems">
+        <table id="lineItemsTable">
+            <apex:variable value="{!1}" var="i"/>
+            <tr>
+                <th class="firstCell tableCell">Date</th>
+                <th class="tableCell">{!IF(BEGINS(Instructor_Invoice__c.Name, 'EXPINV') ,'Expense Title','Course Code and Title')}</th>
+                <th class="tableCell {!isHidden}">Expense Type</th>
+                <th class="tableCell {!isHidden}">Unit Cost</th>
+                <th class="tableCell {!isHidden}">Quantity</th>
+                <th class="lastCell tableCell">Amount</th>
+            </tr>
+            <apex:repeat var="lineItems" value="{!Instructor_Invoice__c.Instructor_Invoice_Lines__r}">
+                <tr class="rowParrity{!IF(MOD(i,2)==0,'Even','Odd')}">
+                    <td class="firstCell tableCell"><apex:outputText value="{0, date,dd'/'MM'/'yyyy}"><apex:param value="{!lineItems.Expense_Date__c}" /></apex:outputText></td>
+                    <td class="tableCell">{!lineItems.Name}</td>
+                    <td class="tableCell {!isHidden}">{!lineItems.Expense_Type__c}</td>
+                    <td class="tableCell {!isHidden}"><apex:outputText value="{0, number, '£'0.00}"><apex:param value="{!lineItems.Unit_Cost__c}" /></apex:outputText></td>
+                    <td class="tableCell {!isHidden}"><apex:outputText value="{0, number, 0}"><apex:param value="{!lineItems.Quantity__c}" /></apex:outputText></td>
+                    <td class="lastCell tableCell"><apex:outputText value="{0, number, '£'0.00}"><apex:param value="{!lineItems.Amount__c}" /></apex:outputText></td>
+                    <apex:variable value="{!i+1}" var="i" />
+                </tr>
+            </apex:repeat>
+            <tr>
+                <th colspan="{!IF(BEGINS(Instructor_Invoice__c.Name, 'EXPINV'), '5', '2')}" class="subTotalRowCell tableSubHeader tableCell">Sub Total</th>
+                <td class="subTotalRowCell tableSubHeaderValue tableCell lastCell">
+                    <apex:outputText value="{0, number, '£'0.00}"><apex:param value="{!Instructor_Invoice__c.Subtotal__c}" /></apex:outputText>
+                </td>
+            </tr>
+            <tr>
+                <th colspan="{!IF(BEGINS(Instructor_Invoice__c.Name, 'EXPINV'), '5', '2')}" class="vatRowCell tableSubHeader tableCell">VAT</th>
+                <td class="vatRowCell tableSubHeaderValue tableCell lastCell">
+                    <apex:outputText value="{0, number, 0'%'}"><apex:param value="{!Instructor_Invoice__c.VAT__c}" /></apex:outputText>
+                </td>
+            </tr>
+            <tr id="invoiceTotalRow">
+                <th colspan="{!IF(BEGINS(Instructor_Invoice__c.Name, 'EXPINV'), '5', '2')}" id="invoiceTotalLabel"><span>Invoice Total</span></th>
+                <th id="invoiceTotalValue" class="lastCell tableCell">
+                    <span><apex:outputText value="{0, number, '£'0.00}"><apex:param value="{!Instructor_Invoice__c.Invoice_Total__c}" /></apex:outputText></span>
+
+                </th>
+            </tr>
+        </table>
+    </div>
+
+    <div class="paymentInfo">
+        <table id="paymentInfoTable">
+            <tr>
+                <th class="firstCell tableCell">Payment Reference</th>
+                <td class="absorbingColumn"><apex:outputText value="{!Instructor_Invoice__c.Name}" /></td>
+                <th>Bank Name</th>
+                <td class="lastCell tableCell absorbingColumn"><apex:outputText value="{!Instructor_Invoice__c.Course__r.Instructor__r.Instructor__r.Bank_Name__c}" /></td>
+            </tr>
+            <tr>
+                <th class="firstCell tableCell">Consultant Name</th>
+                <td><apex:outputText value="{!Instructor_Invoice__c.Course__r.Instructor__r.Name}" /></td>
+                <th>Bank Address</th>
+                <td rowspan="4" class="lastCell tableCell"><apex:outputText value="{!SUBSTITUTE(JSENCODE(Instructor_Invoice__c.Course__r.Instructor__r.Instructor__r.Bank_Address__c),'\r\n','<br/>')}" escape="false" /></td>
+            </tr>
+            <tr>
+                <th class="firstCell tableCell">Account Name</th>
+                <td><apex:outputText value="{!Instructor_Invoice__c.Course__r.Instructor__r.Name}" /></td>
+            </tr>
+            <tr>
+                <th class="firstCell tableCell">IBAN</th>
+                <td><apex:outputText value="{!Instructor_Invoice__c.Course__r.Instructor__r.Instructor__r.IBAN__c}" /></td>
+            </tr>
+            <tr>
+                <th class="firstCell tableCell">SWIFT</th>
+                <td><apex:outputText value="{!Instructor_Invoice__c.Course__r.Instructor__r.Instructor__r.SWIFT__c}" /></td>
+            </tr>
+        </table>
+    </div>
+
+</apex:page>

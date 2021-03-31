@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Billed_To__c</fullName>
+    <externalId>false</externalId>
+    <formula>Course__r.Account.Name &amp;  BR() &amp;
+ Course__r.Account.BillingStreet  &amp;  BR() &amp;
+ Course__r.Account.BillingCity  &amp;  BR() &amp;
+ Course__r.Account.BillingState  &amp;  BR() &amp;
+ Course__r.Account.BillingCountry  &amp;  BR() &amp;
+ Course__r.Account.BillingPostalCode</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Billed To</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>
